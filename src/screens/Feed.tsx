@@ -4,9 +4,12 @@ import FeedCard from "../UI/FeedCard/FeedCard";
 import { apiCall } from "../utils/utilities";
 import type { IFeedItem } from "../interface/IFeedItem";
 import PostEditor from "../UI/Post/Post";
+import AuthForm from "../UI/AuthForm/AuthForm";
+import Modal from "../UI/Modal/Modal";
 
 const Feed = () => {
     const [feed, setFeed] = useState<IFeedItem[]>([]);
+    const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         console.log('Feed component mounted');
@@ -23,7 +26,18 @@ const Feed = () => {
     return (
         <AppWrapper>
             <div className="flex flex-col items-center justify-center h-screen">
-            <PostEditor />
+                <PostEditor />
+
+                <button
+                    className="px-4 py-2 bg-indigo-600 text-white rounded"
+                    onClick={() => setIsOpen(true)}
+                >
+                    Open Auth Modal
+                </button>
+                <Modal showCloseBtn={true} isOpen={isOpen} onClose={() => setIsOpen(false)}>
+                    <AuthForm />
+                </Modal>
+
                 {/* {
                     feed.length === 0 ? (
                         <div className="text-center text-gray-500">Loading feed...</div>
