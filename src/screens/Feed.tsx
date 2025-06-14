@@ -3,7 +3,7 @@ import AppWrapper from "../UI/AppWrapper/AppWrapper";
 import FeedCard from "../UI/FeedCard/FeedCard";
 import { apiCall } from "../utils/utilities";
 import type { IFeedItem } from "../interface/IFeedItem";
-import Post from "../UI/Post/Post";
+import PostEditor from "../UI/Post/Post";
 
 const Feed = () => {
     const [feed, setFeed] = useState<IFeedItem[]>([]);
@@ -23,8 +23,8 @@ const Feed = () => {
     return (
         <AppWrapper>
             <div className="flex flex-col items-center justify-center h-screen">
-            <Post />
-                {
+            <PostEditor />
+                {/* {
                     feed.length === 0 ? (
                         <div className="text-center text-gray-500">Loading feed...</div>
                     ) : (
@@ -32,7 +32,7 @@ const Feed = () => {
                             (item) => ( <FeedCard key={item.id} post={item} /> )
                         )
                     )
-                }
+                } */}
             </div>
         </AppWrapper>
     );

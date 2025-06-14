@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+.ck.ck-editor__top .ck-sticky-panel .ck-sticky-panel__content {
+    border: 0px !important;
+}
+
+.ck .ck-toolbar__items {
+    padding: 5px!important;
+    border-radius: 12px!important;
+    background-color: #00000008 !important;
+}
+.ck.ck-editor__editable.ck-focused:not(.ck-editor__nested-editable) {
+    outline: none !important;
+    border: 0 !important;
+    box-shadow: none !important;
+}
+
+.ck.ck-editor__main > .ck-editor__editable:not(.ck-focused) {
+    border: 0px;
+}
