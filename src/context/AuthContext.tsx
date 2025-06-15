@@ -1,5 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { IUser } from "../interface/IUser";
+import { signOut } from "firebase/auth";
+import { auth } from "../utils/firebase";
 
 
 type AuthContextType = {
@@ -34,6 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     setUser(null);
+    signOut(auth)
     localStorage.removeItem(USER_STORAGE_KEY);
   };
 

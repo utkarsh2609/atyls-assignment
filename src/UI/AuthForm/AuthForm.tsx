@@ -5,6 +5,8 @@ import { apiCall } from "../../utils/utilities";
 import { signInFormContent, signUpFormContent } from "../../utils/constants";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router";
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../utils/firebase";
 
 const AuthForm = () => {
     const [isSignIn, setIsSignIn] = useState(true);
@@ -41,18 +43,19 @@ const AuthForm = () => {
             signInApi(form.email, form.password, false)
             console.log("Signing up with:", form);
         }
-        // Reset form after submission
-        setForm({ email: "", password: "", repeatPassword: "" });
+
     }
 
     const signInApi = async (email: string, password: string, isLogin: boolean) => {
         try {
-            const response = await apiCall('POST', `https://reqres.in/api/${isLogin ? 'login': 'register'}`, { email, password });
+            const response = isLogin ? await signInWithEmailAndPassword(auth, email, password) : await createUserWithEmailAndPassword(auth, email, password);
             console.log('signInApi response =', response);
-            const userData = {username: email.toString().split('.')[0], email, token: response.token}
+            const userData = { username: email.toString().split('@')[0], email, token: response.user.providerId };
             login(userData);
+            // Reset form after submission
+            setForm({ email: "", password: "", repeatPassword: "" });
             navigate('/');
-        }catch (error) {
+        } catch (error) {
             console.error('Sign in failed:', error);
         }
     };
