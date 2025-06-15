@@ -7,24 +7,12 @@ import { useAuth } from '../../context/AuthContext';
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  // const [isLoggedIn, setIsLoggededIn] = useState(false);
   const [isAuthScreen, setIisAuthScreen] = useState(false);
-  const { user, login, logout, isAuthenticated } = useAuth();
+  const { user, logout, isAuthenticated } = useAuth();
 
   useEffect(() => {
     setIisAuthScreen(location.pathname == '/signin');
   }, [location]);
-
-  // const handleLoginClick = () => {
-  //   if (isAuthScreen) {
-  //     // Handle sign out logic here
-  //     // setIsLoggededIn(false);
-  //     navigate('/');
-  //   } else {
-  //     // Navigate to sign-in page
-  //     navigate('/signin');
-  //   }
-  // };
 
   const handleAuthButton = () => {
     if (isAuthenticated) {

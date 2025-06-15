@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import LoginIcon from "../../assets/images/login.svg";
 import InputField from "../InputField/InputField";
-import { apiCall } from "../../utils/utilities";
 import { signInFormContent, signUpFormContent } from "../../utils/constants";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router";
@@ -11,7 +10,7 @@ import { auth } from "../../utils/firebase";
 const AuthForm = () => {
     const [isSignIn, setIsSignIn] = useState(true);
     const [formContent, setFormContent] = useState(signInFormContent);
-    const { user, login, logout, isAuthenticated } = useAuth();
+    const { login } = useAuth();
     const navigate = useNavigate();
 
     useEffect(() => {

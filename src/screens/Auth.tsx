@@ -1,13 +1,25 @@
 import { useEffect, useState } from "react";
 import AuthForm from "../UI/AuthForm/AuthForm";
 import Modal from "../UI/Modal/Modal";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router";
 
 const Auth = () => {
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState(false);
+    const { user } = useAuth();
+
+
     useEffect(() => {
-        console.log('Auth component mounted');
-        setIsOpen(true);
-    }, []);
+        console.log('Auth component mounted', user);
+        if (user) {
+            // If user is already authenticated, redirect to home
+            navigate('/');
+        } else {
+            setIsOpen(true);
+        }
+    }, [user]);
+
 
     return (
         <div className="flex flex-col items-center justify-center h-screen">
