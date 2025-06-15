@@ -76,7 +76,7 @@ const Feed = () => {
                             <div className="text-center text-gray-500">Loading feed...</div>
                         ) : (
                             feed.map(item => (
-                                <FeedCard key={item.id} post={item} onInteract={setIsOpen} />
+                                <FeedCard key={`${item.id}_${Date.now()*Math.random()}`} post={item} onInteract={setIsOpen} />
                             ))
                         )}
                         {feed.length >= LIMIT && <div ref={loader} />}

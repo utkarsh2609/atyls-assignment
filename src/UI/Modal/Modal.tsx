@@ -10,8 +10,7 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({
     isOpen,
     onClose,
-    children,
-    className }) => {
+    children }) => {
     const modalRef = useRef<HTMLDivElement>(null);
     const [isAnimatingOut, setIsAnimatingOut] = useState(false);
     const [mounted, setMounted] = useState(false);
