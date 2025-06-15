@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import AppWrapper from "../UI/AppWrapper/AppWrapper";
 import FeedCard from "../UI/FeedCard/FeedCard";
 import { apiCall } from "../utils/utilities";
@@ -9,60 +9,79 @@ import Modal from "../UI/Modal/Modal";
 import Alert from "../UI/Alert/Alert";
 import { useAuth } from "../context/AuthContext";
 
+const LIMIT = 10;
+
 const Feed = () => {
     const [feed, setFeed] = useState<IFeedItem[]>([]);
     const [isOpen, setIsOpen] = useState(false);
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [hasMore, setHasMore] = useState(true);
     const { isAuthenticated } = useAuth();
+    const loader = useRef<HTMLDivElement | null>(null);
 
-    useEffect(() => {
-        console.log('Feed component mounted');
-        fetchFeed();
+    const fetchFeed = useCallback(async (pageNum: number) => {
+        setLoading(true);
+        const response = await apiCall('GET', `posts?_page=${pageNum}&_limit=${LIMIT}`);
+        if (response && response.length > 0) {
+            setFeed(prev => [...prev, ...response]);
+            if (response.length < LIMIT) setHasMore(false);
+        } else {
+            setHasMore(false);
+        }
+        setLoading(false);
     }, []);
 
-    const fetchFeed = async () => {
-        const response = await apiCall('GET', 'posts?_page=1&_per_page=25');
-        console.log(response);
-        setFeed(response);
-        console.log('feed', feed);
-    }
+    useEffect(() => {
+        fetchFeed(page);
+    }, [fetchFeed, page]);
+
+    // Infinite scroll observer
+    useEffect(() => {
+        if (!hasMore || loading) return;
+        const observer = new IntersectionObserver(
+            entries => {
+                if (entries[0].isIntersecting) {
+                    setPage(prev => prev + 1);
+                }
+            },
+            { threshold: 1 }
+        );
+        if (loader.current) observer.observe(loader.current);
+        return () => {
+            if (loader.current) observer.unobserve(loader.current);
+        };
+    }, [hasMore, loading]);
 
     return (
         <AppWrapper>
             <div className="flex flex-col items-center justify-center">
                 <div className="w-full max-w-lg">
                     <PostEditor />
-
-                    {/* <button
-                    className="px-4 py-2 bg-indigo-600 text-white rounded"
-                    onClick={() => setIsOpen(true)}
-                >
-                    Open Auth Modal
-                </button>
-                <Modal isOpen={isOpen} onClose={() => {}}>
-                    <AuthForm />
-                </Modal> */}
                     <div className="overflow-y-auto mt-4">
-                        {
-                            feed.length === 0 ? (
-                                <div className="text-center text-gray-500">Loading feed...</div>
-                            ) : (
-                                feed.map(
-                                    (item) => (<FeedCard key={item.id} post={item} onInteract={setIsOpen}/>)
-                                )
-                            )
-                        }
+                        {feed.length === 0 && !loading ? (
+                            <div className="text-center text-gray-500">Loading feed...</div>
+                        ) : (
+                            feed.map(item => (
+                                <FeedCard key={item.id} post={item} onInteract={setIsOpen} />
+                            ))
+                        )}
+                        {feed.length >= LIMIT && <div ref={loader} />}
+                        {loading && <div className="text-center text-gray-400 py-4">Loading more...</div>}
+                        {!hasMore && feed.length > 0 && (
+                            <div className="text-center text-gray-400 py-4">No more posts</div>
+                        )}
                     </div>
-
                 </div>
-                <Modal isOpen={isOpen} onClose={() => { setIsOpen(false) }}>
-                    {
-                        !isAuthenticated ? <AuthForm onClose={() => setIsOpen(false)}/> : <Alert onClose={() => setIsOpen(false)} />
-                    }
-                    
+                <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+                    {!isAuthenticated ? (
+                        <AuthForm onClose={() => setIsOpen(false)} />
+                    ) : (
+                        <Alert onClose={() => setIsOpen(false)} />
+                    )}
                 </Modal>
-
             </div>
         </AppWrapper>
     );
-}
+};
 export default Feed;
