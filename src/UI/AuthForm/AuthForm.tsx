@@ -1,35 +1,61 @@
 import { useEffect, useState } from "react";
 import LoginIcon from "../../assets/images/login.svg";
 import InputField from "../InputField/InputField";
+import { apiCall } from "../../utils/utilities";
+import { signInFormContent, signUpFormContent } from "../../utils/constants";
+import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router";
 
 const AuthForm = () => {
-    const signInFormContent = {
-        formHeader: 'Sign in to continue',
-        formSubHeader: 'Sign in to access all the features on this app',
-        formFooter: 'Do not have and account?',
-        footerBtnLable: 'Sign Up',
-    }
     const [isSignIn, setIsSignIn] = useState(true);
     const [formContent, setFormContent] = useState(signInFormContent);
+    const { user, login, logout, isAuthenticated } = useAuth();
+    const navigate = useNavigate();
 
     useEffect(() => {
         if (isSignIn) {
             setFormContent(signInFormContent);
         } else {
-            setFormContent({
-                formHeader: 'Create an account to continue',
-                formSubHeader: 'Create an account to access all the features on this app',
-                formFooter: 'Already have an account?',
-                footerBtnLable: 'Sign In',
-            });
+            setFormContent(signUpFormContent);
         }
-    } , [isSignIn]);
+    }, [isSignIn]);
 
     const [form, setForm] = useState({
         email: "",
         password: "",
         repeatPassword: "",
     });
+
+    const handleFormSubmit = (event: React.FormEvent) => {
+        event.preventDefault();
+        if (isSignIn) {
+            // Handle sign in logic
+            console.log("Signing in with:", form);
+            signInApi(form.email, form.password, true)
+        } else {
+            // Handle sign up logic
+            if (form.password !== form.repeatPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+            signInApi(form.email, form.password, false)
+            console.log("Signing up with:", form);
+        }
+        // Reset form after submission
+        setForm({ email: "", password: "", repeatPassword: "" });
+    }
+
+    const signInApi = async (email: string, password: string, isLogin: boolean) => {
+        try {
+            const response = await apiCall('POST', `https://reqres.in/api/${isLogin ? 'login': 'register'}`, { email, password });
+            console.log('signInApi response =', response);
+            const userData = {username: email.toString().split('.')[0], email, token: response.token}
+            login(userData);
+            navigate('/');
+        }catch (error) {
+            console.error('Sign in failed:', error);
+        }
+    };
 
     return (
         <div className="bg-gray-200 p-2.5 rounded-2xl">
@@ -43,15 +69,14 @@ const AuthForm = () => {
                         {formContent.formSubHeader}
                     </p>
                 </div>
-                <form className="space-y-4">
-                    <InputField placeholder="Enter your email or username" label="Email or username" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}/>
-                    <InputField placeholder="Enter your password" label="Password" value={form.password} onChange={e => setForm({ ...form,password: e.target.value })}/>
+                <form className="space-y-4" onSubmit={handleFormSubmit}>
+                    <InputField placeholder="Enter your email or username" label="Email or username" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} />
+                    <InputField placeholder="Enter your password" label="Password" value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} />
                     {
-                        !isSignIn && 
-                        <InputField placeholder="Enter your password again" label="Repeat password" value={form.repeatPassword} onChange={e => setForm({ ...form, repeatPassword: e.target.value })}/>
+                        !isSignIn &&
+                        <InputField placeholder="Enter your password again" label="Repeat password" value={form.repeatPassword} onChange={e => setForm({ ...form, repeatPassword: e.target.value })} />
                     }
-                    <button
-                        type="submit"
+                    <button type="submit"
                         className="w-full mt-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl py-3 text-base transition cursor-pointer"
                     >
                         {isSignIn ? 'Sign In' : 'Sign Up'}

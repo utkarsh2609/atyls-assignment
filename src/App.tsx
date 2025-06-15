@@ -4,15 +4,17 @@ import Auth from './screens/Auth';
 import './App.css'
 import Header from './UI/Header/Header'
 import { createBrowserRouter, Outlet, RouterProvider } from 'react-router';
+import { AuthProvider } from './context/AuthContext';
 
 function App() {
 
   return (
-    <div className="w-full">
-      <Header />
-      <Outlet />
-      
-    </div>
+    <AuthProvider>
+      <div className="w-full">
+        <Header />
+        <Outlet />
+      </div>
+    </AuthProvider>
   )
 }
 
