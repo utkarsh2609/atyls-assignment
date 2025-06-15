@@ -2,14 +2,15 @@ import HeartIcon from '../../assets/images/heart.svg';
 import CommentIcon from '../../assets/images/comment-text.svg';
 import ShareIcon from '../../assets/images/share.svg';
 import type { IFeedItem } from '../../interface/IFeedItem';
+import type { Dispatch, SetStateAction } from 'react';
 
 type FeedCardProps = {
   key: number;
   post: IFeedItem;
+  onInteract: Dispatch<SetStateAction<boolean>>;
 }
 
-const FeedCard: React.FC<FeedCardProps> = ({post}) => {
-  console.log('feed card rendered', post);
+const FeedCard: React.FC<FeedCardProps> = ({post, onInteract}) => {
 
   return (
     <div className="bg-gray-100 rounded-2xl p-2 mb-4">
@@ -30,11 +31,11 @@ const FeedCard: React.FC<FeedCardProps> = ({post}) => {
             <p className="text-gray-800 text-sm"> {post.body} </p>
           </div>
         </div>
-          <div className="flex items-center gap-6 pt-2.5 pb-1 ml-2.5">
+            <div className="flex items-center gap-6 pt-2.5 pb-1 ml-2.5" onClick={() => onInteract(true)}>
             <img src={HeartIcon} alt="Heart" className='cursor-pointer' />
             <img src={CommentIcon} alt="Comment" className='cursor-pointer' />
             <img src={ShareIcon} alt="Share" className='cursor-pointer' />
-          </div>
+            </div>
     </div>
   );
 }

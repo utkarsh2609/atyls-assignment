@@ -12,7 +12,9 @@ function App() {
     <AuthProvider>
       <div className="w-full">
         <Header />
-        <Outlet />
+        <main className='pt-16'>
+          <Outlet />
+        </main>
       </div>
     </AuthProvider>
   )

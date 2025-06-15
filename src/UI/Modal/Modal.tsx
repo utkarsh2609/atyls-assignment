@@ -65,7 +65,7 @@ const Modal: React.FC<ModalProps> = ({
             {/* Modal */}
             <div
                 ref={modalRef}
-                className={`fixed desktop:w-[476px] mx-auto rounded-t-[20px] transform will-change-transform z-50
+                className={`fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 desktop:w-[476px] w-full max-w-lg rounded-t-[20px] transform will-change-transform z-50
           ${isOpen ? 'animate-slideIn' : isAnimatingOut ? 'animate-slideOut' : ''}`}
             >
                 {/* <div className={`py-[36px] px-[32px] h-full flex flex-col ${className}`}> */}

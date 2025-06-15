@@ -7,7 +7,7 @@ import { useNavigate } from "react-router";
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../../utils/firebase";
 
-const AuthForm = () => {
+const AuthForm = ({ onClose }: { onClose?: () => void }) => {
     const [isSignIn, setIsSignIn] = useState(true);
     const [formContent, setFormContent] = useState(signInFormContent);
     const { login } = useAuth();
@@ -53,7 +53,11 @@ const AuthForm = () => {
             login(userData);
             // Reset form after submission
             setForm({ email: "", password: "", repeatPassword: "" });
-            navigate('/');
+            if (onClose) {
+                onClose();
+            } else {
+                navigate('/');
+            }
         } catch (error) {
             console.error('Sign in failed:', error);
         }

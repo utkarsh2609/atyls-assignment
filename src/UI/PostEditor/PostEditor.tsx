@@ -50,7 +50,7 @@ const PostEditor = () => {
         return {
             editorConfig: {
                 toolbar: {
-                    items: ['undo', 'redo', '|', 'heading', '|', 'bold', 'italic', 'underline', '|', 'alignment', '|', 'bulletedList', 'numberedList', 'outdent', 'indent'],
+                    items: ['heading', '|', 'bold', 'italic', 'underline', '|', 'alignment', '|', 'bulletedList', 'numberedList', 'outdent', 'indent'],
                     shouldNotGroupWhenFull: true
                 },
                 plugins: [Alignment, Autosave, Bold, Essentials, Heading, Indent, IndentBlock, Italic, List, Paragraph, Underline],
