@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, type Dispatch, type SetStateAction } from 'react';
 
 import MicIcon from '../../assets/images/mic.svg';
 import SendIcon from '../../assets/images/send.svg';
@@ -32,13 +32,18 @@ import { useAuth } from '../../context/AuthContext';
  */
 const LICENSE_KEY = 'GPL'; // or <YOUR_LICENSE_KEY>.
 
-const PostEditor = ({ onSendPost }: { onSendPost: ((input:IFeedItem) => void)}) => {
+type PostEditorProps = {
+    onSendPost: (input: IFeedItem) => void;
+    onInteract: Dispatch<SetStateAction<boolean>>;
+};
+
+const PostEditor: React.FC<PostEditorProps> = ({ onSendPost, onInteract }) => {
     const editorContainerRef = useRef<HTMLDivElement | null>(null);
     const editorRef = useRef<any>(null); // Use a more specific type if available from CKEditor typings
     const [isLayoutReady, setIsLayoutReady] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
     const [postData, setPostData] = useState('');
-    const {user} = useAuth()
+    const { user } = useAuth()
 
     useEffect(() => {
         setIsLayoutReady(true);
@@ -112,15 +117,19 @@ const PostEditor = ({ onSendPost }: { onSendPost: ((input:IFeedItem) => void)}) 
     }, [isLayoutReady]);
 
     const handleSend = () => {
-        console.log("Post data:", postData);
-        const post: IFeedItem = {
-            id: Date.now(),
-            body: postData,
-            userName: user?.username || 'Anonymous',
-            timestamp: new Date().getTime(),
+        if (user) {
+            console.log("Post data:", postData);
+            const post: IFeedItem = {
+                id: Date.now(),
+                body: postData,
+                userName: user?.username || 'Anonymous',
+                timestamp: new Date().getTime(),
+            }
+            onSendPost(post); // Call the parent function to handle sending the post
+            setPostData(''); // Clear the post data after sending
+        } else {
+            onInteract(true)
         }
-        onSendPost(post); // Call the parent function to handle sending the post
-        setPostData(''); // Clear the post data after sending
     };
 
     return (

@@ -70,7 +70,7 @@ const Feed = () => {
         <AppWrapper>
             <div className="flex flex-col items-center justify-center">
                 <div className="w-full max-w-lg">
-                    <PostEditor onSendPost={createPost} />
+                    <PostEditor onSendPost={createPost} onInteract={setIsOpen}/>
                     <div className="overflow-y-auto mt-4">
                         {feed.length === 0 && !loading ? (
                             <div className="text-center text-gray-500">Loading feed...</div>
