@@ -3,7 +3,7 @@ import AppWrapper from "../UI/AppWrapper/AppWrapper";
 import FeedCard from "../UI/FeedCard/FeedCard";
 import { apiCall } from "../utils/utilities";
 import type { IFeedItem } from "../interface/IFeedItem";
-import PostEditor from "../UI/Post/Post";
+import PostEditor from "../UI/PostEditor/PostEditor";
 import AuthForm from "../UI/AuthForm/AuthForm";
 import Modal from "../UI/Modal/Modal";
 
@@ -34,7 +34,7 @@ const Feed = () => {
                 >
                     Open Auth Modal
                 </button>
-                <Modal showCloseBtn={true} isOpen={isOpen} onClose={() => setIsOpen(false)}>
+                <Modal isOpen={isOpen} onClose={() => {}}>
                     <AuthForm />
                 </Modal>
 

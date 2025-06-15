@@ -22,6 +22,8 @@ import {
     Underline
 } from 'ckeditor5';
 import 'ckeditor5/ckeditor5.css';
+import Modal from '../Modal/Modal';
+import Alert from '../Alert/Alert';
 
 /**
  * Create a free account with a trial: https://portal.ckeditor.com/checkout?plan=free
@@ -32,6 +34,7 @@ const PostEditor = () => {
     const editorContainerRef = useRef(null);
     const editorRef = useRef(null);
     const [isLayoutReady, setIsLayoutReady] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
         setIsLayoutReady(true);
@@ -105,24 +108,29 @@ const PostEditor = () => {
     }, [isLayoutReady]);
 
     return (
-        <div className="bg-gray-100 rounded-2xl p-2 mb-4">
-            <div className="mx-auto bg-white rounded-t-2xl shadow p-3.5 border border-gray-200" ref={editorContainerRef}>
-                <div className="editor-container__editor">
-                    <div ref={editorRef}>{editorConfig && <CKEditor editor={ClassicEditor} config={editorConfig} />}</div>
+        <>
+            <div className="bg-gray-100 rounded-2xl p-2 mb-4">
+                <div className="mx-auto bg-white rounded-t-2xl shadow p-3.5 border border-gray-200" ref={editorContainerRef}>
+                    <div className="editor-container__editor">
+                        <div ref={editorRef}>{editorConfig && <CKEditor editor={ClassicEditor} config={editorConfig} />}</div>
+                    </div>
                 </div>
-            </div>
-            <div className='flex items-center justify-between mx-auto bg-white rounded-b-2xl shadow p-3.5 border border-gray-200'>
-                <div className="flex items-center gap-6 pt-2.5 pb-1">
-                    <img src={PlusIcon} alt="Heart" className='cursor-pointer w-6 bg-gray-200 rounded-md' />
-                    <img src={MicIcon} alt="Comment" className='cursor-pointer w-6' />
-                    <img src={VideoIcon} alt="Share" className='cursor-pointer w-6' />
+                <div className='flex items-center justify-between mx-auto bg-white rounded-b-2xl shadow p-3.5 border border-gray-200'>
+                    <div className="flex items-center gap-6 pt-2.5 pb-1" onClick={() =>setIsOpen(true)}>
+                        <img src={PlusIcon} alt="Heart" className='cursor-pointer w-6 bg-gray-200 rounded-md' />
+                        <img src={MicIcon} alt="Comment" className='cursor-pointer w-6' />
+                        <img src={VideoIcon} alt="Share" className='cursor-pointer w-6' />
+                    </div>
+                    <div>
+                        <img src={SendIcon} alt="Send" />
+                    </div>
                 </div>
-                <div>
-                    <img src={SendIcon} alt="Send" />
-                </div>
-            </div>
 
-        </div>
+            </div>
+            <Modal isOpen={isOpen} onClose={() => {setIsOpen(false)}}>
+                <Alert onClose={() => setIsOpen(false)}/>
+            </Modal>
+        </>
     );
 }
 

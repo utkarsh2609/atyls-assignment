@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 interface ModalProps {
     isOpen: boolean;
-    showCloseBtn: boolean;
     onClose: () => void;
     children: React.ReactNode;
     height?: string;
@@ -11,7 +10,6 @@ interface ModalProps {
 const Modal: React.FC<ModalProps> = ({
     isOpen,
     onClose,
-    showCloseBtn = true,
     children,
     className }) => {
     const modalRef = useRef<HTMLDivElement>(null);
