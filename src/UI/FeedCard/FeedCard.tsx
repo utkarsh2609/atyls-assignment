@@ -5,7 +5,6 @@ import type { IFeedItem } from '../../interface/IFeedItem';
 import type { Dispatch, SetStateAction } from 'react';
 
 type FeedCardProps = {
-  key: number;
   post: IFeedItem;
   onInteract: Dispatch<SetStateAction<boolean>>;
 }
@@ -17,12 +16,12 @@ const FeedCard: React.FC<FeedCardProps> = ({post, onInteract}) => {
         <div className="max-w-lg mx-auto bg-white rounded-2xl shadow p-3.5 border border-gray-200">
           <div className="flex items-center mb-2">
             <img
-              src={`https://randomuser.me/api/portraits/women/${post.id}.jpg`}
+              src={`https://robohash.org/${post.id}?set=set4&size=180x180`}
               alt="Theresa Webb"
               className="w-10 h-10 rounded-lg mr-3 object-cover"
             />
             <div>
-              <div className="font-semibold text-gray-900 text-base leading-tight">Theresa Webb</div>
+              <div className="font-semibold text-gray-900 text-base leading-tight">{post.userName || 'Anonymous'}</div>
               <div className="text-xs text-gray-400">5 mins ago</div>
             </div>
           </div>

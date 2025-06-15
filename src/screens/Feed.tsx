@@ -53,11 +53,24 @@ const Feed = () => {
         };
     }, [hasMore, loading]);
 
+    const createPost = async (postData: IFeedItem) => {
+        try {
+            const response = await apiCall('POST', 'posts', { content: postData });
+            if (response) {
+                setFeed(prev => [response.content, ...prev]);
+            }
+        } catch (error) {
+            console.error("Error creating post:", error);
+            return;
+            
+        }
+    };
+
     return (
         <AppWrapper>
             <div className="flex flex-col items-center justify-center">
                 <div className="w-full max-w-lg">
-                    <PostEditor />
+                    <PostEditor onSendPost={createPost} />
                     <div className="overflow-y-auto mt-4">
                         {feed.length === 0 && !loading ? (
                             <div className="text-center text-gray-500">Loading feed...</div>

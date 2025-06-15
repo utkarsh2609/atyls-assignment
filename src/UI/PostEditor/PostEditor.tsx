@@ -24,17 +24,21 @@ import {
 import 'ckeditor5/ckeditor5.css';
 import Modal from '../Modal/Modal';
 import Alert from '../Alert/Alert';
+import type { IFeedItem } from '../../interface/IFeedItem';
+import { useAuth } from '../../context/AuthContext';
 
 /**
  * Create a free account with a trial: https://portal.ckeditor.com/checkout?plan=free
  */
 const LICENSE_KEY = 'GPL'; // or <YOUR_LICENSE_KEY>.
 
-const PostEditor = () => {
-    const editorContainerRef = useRef(null);
-    const editorRef = useRef(null);
+const PostEditor = ({ onSendPost }: { onSendPost: ((input:IFeedItem) => void)}) => {
+    const editorContainerRef = useRef<HTMLDivElement | null>(null);
+    const editorRef = useRef<any>(null); // Use a more specific type if available from CKEditor typings
     const [isLayoutReady, setIsLayoutReady] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [postData, setPostData] = useState('');
+    const {user} = useAuth()
 
     useEffect(() => {
         setIsLayoutReady(true);
@@ -107,28 +111,58 @@ const PostEditor = () => {
         };
     }, [isLayoutReady]);
 
+    const handleSend = () => {
+        console.log("Post data:", postData);
+        const post: IFeedItem = {
+            id: Date.now(),
+            body: postData,
+            userName: user?.username || 'Anonymous',
+            timestamp: new Date().toISOString(),
+        }
+        onSendPost(post); // Call the parent function to handle sending the post
+        setPostData(''); // Clear the post data after sending
+    };
+
     return (
         <>
             <div className="bg-gray-100 rounded-2xl p-2 mb-4">
                 <div className="mx-auto bg-white rounded-t-2xl shadow p-3.5 border border-gray-200" ref={editorContainerRef}>
                     <div className="editor-container__editor">
-                        <div ref={editorRef}>{editorConfig && <CKEditor editor={ClassicEditor} config={editorConfig} />}</div>
+                        <div>
+                            {editorConfig && (
+                                <CKEditor
+                                    editor={ClassicEditor}
+                                    config={editorConfig}
+                                    onReady={editor => {
+                                        editorRef.current = editor;
+                                    }}
+                                    data={postData}
+                                    onChange={() => {
+                                        setPostData(editorRef.current?.getData() || '');
+                                        console.log("editor data", editorRef.current?.getData());
+                                    }}
+                                />
+                            )}
+                        </div>
                     </div>
                 </div>
                 <div className='flex items-center justify-between mx-auto bg-white rounded-b-2xl shadow p-3.5 border border-gray-200'>
-                    <div className="flex items-center gap-6 pt-2.5 pb-1" onClick={() =>setIsOpen(true)}>
+                    <div className="flex items-center gap-6 pt-2.5 pb-1" onClick={() => setIsOpen(true)}>
                         <img src={PlusIcon} alt="Heart" className='cursor-pointer w-6 bg-gray-200 rounded-md' />
                         <img src={MicIcon} alt="Comment" className='cursor-pointer w-6' />
                         <img src={VideoIcon} alt="Share" className='cursor-pointer w-6' />
                     </div>
                     <div>
-                        <img src={SendIcon} alt="Send" />
+                        <button onClick={handleSend} disabled={!postData || postData.trim() === "" || postData === "<p></p>"}
+                            className={`cursor-pointer transition-opacity ${!postData || postData.trim() === "" || postData === "<p></p>" ? "opacity-50 pointer-events-none" : ""} bg-transparent border-none p-0`} >
+                            <img src={SendIcon} alt="Send" />
+                        </button>
                     </div>
                 </div>
 
             </div>
-            <Modal isOpen={isOpen} onClose={() => {setIsOpen(false)}}>
-                <Alert onClose={() => setIsOpen(false)}/>
+            <Modal isOpen={isOpen} onClose={() => { setIsOpen(false) }}>
+                <Alert onClose={() => setIsOpen(false)} />
             </Modal>
         </>
     );

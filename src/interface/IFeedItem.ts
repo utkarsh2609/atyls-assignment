@@ -1,5 +1,6 @@
 export interface IFeedItem {
-    id: number;
-    title: string;
+    id?: number;
+    userName: string;
     body: string;
+    timestamp: string;
 }
