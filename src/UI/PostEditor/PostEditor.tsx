@@ -117,7 +117,7 @@ const PostEditor = ({ onSendPost }: { onSendPost: ((input:IFeedItem) => void)}) 
             id: Date.now(),
             body: postData,
             userName: user?.username || 'Anonymous',
-            timestamp: new Date().toISOString(),
+            timestamp: new Date().getTime(),
         }
         onSendPost(post); // Call the parent function to handle sending the post
         setPostData(''); // Clear the post data after sending
